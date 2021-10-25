@@ -1,6 +1,6 @@
 import fs from "fs";
 
-function listNestedFiles(dir, keyword, callback) {
+export function listNestedFiles(dir, callback) {
   let result = [];
   fs.readdir(dir, (rdErr, files) => {
     if (rdErr) {
@@ -18,22 +18,14 @@ function listNestedFiles(dir, keyword, callback) {
           return callback(sErr);
         }
         if (stat.isFile()) {
-          fs.readFile(path, (rfErr, content) => {
-            if (rfErr) {
-              return callback(rfErr);
-            }
-
-            if (content.includes(keyword)) {
-              result.push(path);
-            }
-            if (index === files.length - 1) {
-              return callback(null, result);
-            }
-            iterate(index + 1);
-          });
+          result.push(path);
+          if (index === files.length - 1) {
+            return callback(null, result);
+          }
+          iterate(index + 1);
         }
         if (stat.isDirectory()) {
-          listNestedFiles(path, keyword, (e, r) => {
+          listNestedFiles(path, (e, r) => {
             if (e) {
               return callback(e);
             }
@@ -49,10 +41,3 @@ function listNestedFiles(dir, keyword, callback) {
     iterate(0);
   });
 }
-
-listNestedFiles("../..", "king", (e, r) => {
-  if (e) {
-    throw new Error(e);
-  }
-  console.log(r);
-});
