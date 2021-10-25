@@ -1,47 +1,50 @@
 import fs from "fs";
 
-function listNestedFiles(dir, cb) {
-  let list = [];
-  fs.readdir(dir, (rdError, files) => {
-    if (rdError) {
-      return cb(rdError);
+function listNestedFiles(dir, callback) {
+  let result = [];
+  fs.readdir(dir, (rdErr, files) => {
+    if (rdErr) {
+      return callback(rdErr);
     }
 
-    let index = files.length;
-    if (!index) {
-      return cb(null, list);
+    if (files.length === 0) {
+      return process.nextTick(() => callback(null, result));
     }
 
-    for (const f of files) {
-      const path = dir + "/" + f;
-      fs.stat(path, (sError, stats) => {
-        if (sError) {
-          return cb(sError);
+    function iterate(index) {
+      const path = `${dir}/${files[index]}`;
+      fs.stat(path, (sErr, stat) => {
+        if (sErr) {
+          return callback(sErr);
         }
-        if (stats.isDirectory()) {
-          listNestedFiles(path, (err, res) => {
-            if (err) {
-              return cb(err);
-            }
-            list = list.concat(res);
-            if (!--index) {
-              return cb(null, list);
-            }
-          });
-        } else {
-          list.push(path);
-          if (!--index) {
-            return cb(null, list);
+        if (stat.isFile()) {
+          result.push(path);
+          if (index === files.length - 1) {
+            return callback(null, result);
           }
+          iterate(index + 1);
+        }
+        if (stat.isDirectory()) {
+          listNestedFiles(path, (e, r) => {
+            if (e) {
+              return callback(e);
+            }
+            result = result.concat(r);
+            if (index === files.length - 1) {
+              return callback(null, result);
+            }
+            iterate(index + 1);
+          });
         }
       });
     }
+    iterate(0);
   });
 }
 
-listNestedFiles(".", (err, list) => {
-  if (err) {
-    throw new Error(err);
+listNestedFiles("../..", (e, r) => {
+  if (e) {
+    throw new Error(e);
   }
-  console.log(list);
+  console.log(r);
 });
