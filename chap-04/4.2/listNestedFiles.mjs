@@ -1,6 +1,6 @@
 import fs from "fs";
 
-function listNestedFiles(dir, callback) {
+export function listNestedFiles(dir, callback) {
   let result = [];
   fs.readdir(dir, (rdErr, files) => {
     if (rdErr) {
@@ -11,10 +11,7 @@ function listNestedFiles(dir, callback) {
       return process.nextTick(() => callback(null, result));
     }
 
-    let length = 0;
-
-    /* index loop quá nhanh dẫn đến  khi check thì index luôn === files.length */
-    for (let index = 0; index < files.length; index++) {
+    function iterate(index) {
       const path = `${dir}/${files[index]}`;
       fs.stat(path, (sErr, stat) => {
         if (sErr) {
@@ -22,9 +19,10 @@ function listNestedFiles(dir, callback) {
         }
         if (stat.isFile()) {
           result.push(path);
-          if (++length === files.length) {
+          if (index === files.length - 1) {
             return callback(null, result);
           }
+          iterate(index + 1);
         }
         if (stat.isDirectory()) {
           listNestedFiles(path, (e, r) => {
@@ -32,19 +30,23 @@ function listNestedFiles(dir, callback) {
               return callback(e);
             }
             result = result.concat(r);
-            if (++length === files.length) {
+            if (index === files.length - 1) {
               return callback(null, result);
             }
+            iterate(index + 1);
           });
         }
       });
     }
+    iterate(0);
   });
 }
 
-listNestedFiles("..", (e, r) => {
-  if (e) {
-    throw new Error(e);
+listNestedFiles("../..", (err, files) => {
+  if (err) {
+    throw new Error(err);
   }
-  console.log(r);
+
+  console.log(files.length + " files");
+  console.log(files);
 });
