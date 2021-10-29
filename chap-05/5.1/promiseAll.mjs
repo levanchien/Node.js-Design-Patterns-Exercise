@@ -7,6 +7,7 @@ function promiseAll(tasks) {
     tasks.forEach((task, index) => {
       task.then(
         (() => {
+          // Nested scope to get closure over current index (and avoid .bind).
           const i = index;
           return (result) => {
             results[i] = result;
