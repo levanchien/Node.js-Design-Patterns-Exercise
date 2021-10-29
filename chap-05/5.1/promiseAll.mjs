@@ -6,12 +6,15 @@ function promiseAll(tasks) {
   return new Promise((resolve, reject) => {
     tasks.forEach((task, index) => {
       task.then(
-        (result) => {
-          results[index] = result;
-          if (++done === tasks.length) {
-            resolve(results);
-          }
-        },
+        (() => {
+          const i = index;
+          return (result) => {
+            results[i] = result;
+            if (++done === tasks.length) {
+              resolve(results);
+            }
+          };
+        })(),
         (error) => {
           reject(error);
         }
