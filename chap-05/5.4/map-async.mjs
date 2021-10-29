@@ -9,7 +9,7 @@ export default function mapAsync(iterable = [], callback, concurrency) {
       while (running < concurrency && done < iterable.length) {
         callback(iterable[index])
           .then(
-            // Nested scope to get closure over current i (and avoid .bind).
+            // Nested scope to get closure over current index (and avoid .bind).
             (() => {
               const i = index;
               return (t) => {
