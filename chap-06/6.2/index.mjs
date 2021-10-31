@@ -1,6 +1,7 @@
 import { createReadStream } from "fs";
 import parse from "csv-parse";
 import { AnalyzeCrime } from "./AnalyzeCrime.mjs";
+import { pipeline } from "stream";
 
 const requests = [
   {
@@ -69,14 +70,20 @@ const csvParser = parse({ columns: true });
 const source = createReadStream(process.argv[2]).pipe(csvParser);
 
 requests.forEach((request) =>
-  source
-    .pipe(
-      new AnalyzeCrime(
-        request.analyzeBy,
-        request.order,
-        request.limit,
-        request.analyze
-      )
-    )
-    .pipe(process.stdout)
+  pipeline(
+    source,
+    new AnalyzeCrime(
+      request.analyzeBy,
+      request.order,
+      request.limit,
+      request.analyze
+    ),
+    process.stdout,
+    (err) => {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+    }
+  )
 );
