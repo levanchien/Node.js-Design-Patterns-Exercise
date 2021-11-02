@@ -1,11 +1,21 @@
 import { createWriteStream } from "fs";
 import net from "net";
+import { PassThrough } from "stream";
 
 let streamMap = new Map();
 
 function getWriteStream(filename) {
   if (!streamMap.get(filename)) {
-    streamMap.set(filename, createWriteStream(filename));
+    streamMap.set(
+      filename,
+      createWriteStream(filename)
+        .on("close", () => {
+          console.log("Close");
+        })
+        .on("finish", () => {
+          console.log("Finish");
+        })
+    );
   }
   return streamMap.get(filename);
 }
@@ -15,7 +25,9 @@ function demultiplexFile(source) {
   let currentFilenameLength = null;
   let currentDataLength = null;
   let writeableStream = null;
+  console.log("cakkk");
   source
+    .pipe(new PassThrough())
     .on("readable", () => {
       let chunk;
       if (currentFilename === null) {
@@ -51,11 +63,6 @@ function demultiplexFile(source) {
       writeableStream = null;
     })
     .on("end", () => {
-      console.log("File saved");
-      streamMap.forEach((v, k) => {
-        v.close();
-        v.end();
-      });
       streamMap = new Map();
     })
     .on("error", (err) => {});
