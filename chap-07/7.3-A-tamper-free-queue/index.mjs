@@ -7,11 +7,21 @@ function getRandomInt(max) {
 const queue = new Queue((enqueue) => {
   setInterval(() => {
     enqueue(getRandomInt(1000));
-  }, 1000);
+  }, 200);
 });
 
-setInterval(() => {
+async function test() {
+  while (true) {
+    await queue.dequeue().then((t) => {
+      console.log("Received: " + t);
+    });
+  }
+}
+
+await test();
+
+/* setInterval(() => {
   queue.dequeue().then((t) => {
     console.log("Received: " + t);
   });
-}, 750);
+}, 100); */
