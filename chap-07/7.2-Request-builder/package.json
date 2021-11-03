@@ -1,0 +1,13 @@
+{
+  "name": "7.2-Request-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node --presets es2015 index.js"
+  },
+  "keywords": [],
+  "author": "Le Van Chien <levanchien95.cit@gmail.com>",
+  "license": "ISC"
+}
