@@ -1,4 +1,4 @@
-module.exports = function (axios, simpleCache) {
+module.exports = function (axios, cache) {
   return new Proxy(axios, {
     get(target, propKey, receiver) {
       /* proxy */
@@ -6,12 +6,12 @@ module.exports = function (axios, simpleCache) {
         return function (...args) {
           const [url] = args;
 
-          const cached = simpleCache.get(url);
+          const cached = cache.get(url);
 
           if (!cached) {
             return target.get(...args).then(
               (res) => {
-                simpleCache.set(url, res);
+                cache.set(url, res);
                 return res;
               },
               (err) => {
@@ -28,9 +28,9 @@ module.exports = function (axios, simpleCache) {
       if (propKey === "clearCache") {
         return function (url) {
           if (url) {
-            return simpleCache.delete(url);
+            return cache.delete(url);
           }
-          simpleCache.clear();
+          cache.clear();
         };
       }
 
