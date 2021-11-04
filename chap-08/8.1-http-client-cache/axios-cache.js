@@ -1,6 +1,4 @@
-const cache = new Map();
-
-module.exports = function (axios) {
+module.exports = function (axios, simpleCache) {
   return new Proxy(axios, {
     get(target, propKey, receiver) {
       /* proxy */
@@ -8,12 +6,12 @@ module.exports = function (axios) {
         return function (...args) {
           const [url] = args;
 
-          const cached = cache.get(url);
+          const cached = simpleCache.get(url);
 
           if (!cached) {
             return target.get(...args).then(
               (res) => {
-                cache.set(url, res);
+                simpleCache.set(url, res);
                 return res;
               },
               (err) => {
@@ -30,9 +28,9 @@ module.exports = function (axios) {
       if (propKey === "clearCache") {
         return function (url) {
           if (url) {
-            return cache.delete(url);
+            return simpleCache.delete(url);
           }
-          cache.clear();
+          simpleCache.clear();
         };
       }
 
