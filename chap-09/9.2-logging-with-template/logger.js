@@ -16,18 +16,18 @@ module.exports = class Logger {
   }
 
   _debug() {
-    throw new Error("debug() muust be implemented");
+    throw new Error("debug() must be implemented");
   }
 
   _info() {
-    throw new Error("info() muust be implemented");
+    throw new Error("info() must be implemented");
   }
 
   _warn() {
-    throw new Error("warn() muust be implemented");
+    throw new Error("warn() must be implemented");
   }
 
   _error() {
-    throw new Error("error() muust be implemented");
+    throw new Error("error() must be implemented");
   }
 };
