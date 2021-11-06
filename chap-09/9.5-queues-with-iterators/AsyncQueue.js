@@ -1,7 +1,6 @@
 module.exports = class AsyncQueueIterator {
-  constructor(concurrency) {
+  constructor() {
     this.queue = [];
-    this.concurrency = concurrency;
   }
 
   enqueue(item) {
