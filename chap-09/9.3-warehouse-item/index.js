@@ -1,16 +1,26 @@
+const { STATES } = require("./warehouse-item/constants");
 const WarehouseItem = require("./warehouse-item/warehouse-item");
 
-/* Valida case */
-const warehouseItem = new WarehouseItem(123456);
+const warehouseItem = new WarehouseItem({ id: 123456 });
 console.log(warehouseItem.describe());
 warehouseItem.store("ZZXX100");
 console.log(warehouseItem.describe());
 warehouseItem.deliver("Le Van Chien, VN");
 console.log(warehouseItem.describe());
 
-/* Invalida case */
-const warehouseItem2 = new WarehouseItem(228888);
+const warehouseItem2 = new WarehouseItem({
+  id: 228888,
+  state: STATES.STORED,
+  locationId: "TVZY123",
+});
 console.log(warehouseItem2.describe());
 
-warehouseItem2.deliver("Le Van Chien, VN");
-console.log(warehouseItem2.describe());
+const warehouseItem3 = new WarehouseItem({
+  id: 56897,
+  state: STATES.DELIVERED,
+  address: "Mr Le Van Chien, VN",
+});
+console.log(warehouseItem3.describe());
+
+/* invalid case */
+warehouseItem.deliver("Mr Le Vuong, VN");
