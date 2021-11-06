@@ -18,7 +18,9 @@ module.exports.createLazyBuffer = () => {
         }
 
         if (!t["_buffer"]) {
-          return t[p];
+          return function () {
+            console.log("Please use method write() to init buffer.");
+          };
         }
 
         return typeof t["_buffer"][p] === "function"
