@@ -1,0 +1,12 @@
+{
+  "name": "9.4-logging-middleware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "logger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Le Van Chien <levanchien95.cit@gmail.com>",
+  "license": "ISC"
+}
