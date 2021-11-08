@@ -1,0 +1,13 @@
+{
+  "name": "11.3-compute-farm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Le Van Chien <levanchien95.cit@gmail.com>",
+  "license": "ISC"
+}
